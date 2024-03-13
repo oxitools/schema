@@ -1,8 +1,4 @@
-// deno-lint-ignore-file no-explicit-any
-
 /**
- * @module @oxi/schema
- *
  * The `@oxi/schema` library offers a comprehensive and flexible system for data validation in JavaScript and TypeScript applications. It provides a rich set of built-in validators for common data types and structures, as well as the ability to define custom validation logic tailored to specific requirements. The library is designed to be both powerful and easy to use, with a focus on type safety and composability.
  *
  * ## Features
@@ -63,6 +59,8 @@
  *
  * @module
  */
+
+// deno-lint-ignore-file no-explicit-any
 
 import {
   getTypeOf,
