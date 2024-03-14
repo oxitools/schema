@@ -777,3 +777,25 @@ Deno.test("Schema.uuid (custom error)", () => {
     message: "Invalid uuid",
   });
 });
+
+Deno.test("Schema.partial", () => {
+  const schema = s.partial(s.obj({ name: s.str(), age: s.num() }));
+
+  assertOk(schema.parse({ name: "John" }));
+  assertOk(schema.parse({ age: 30 }));
+  assertOk(schema.parse({ name: "John", age: 30 }));
+  assertOk(schema.parse({}));
+
+  assertErr(schema.parse({ name: 123 }));
+  assertErr(schema.parse({ age: "30" }));
+});
+
+Deno.test("Schema.required", () => {
+  const original = s.obj({ name: s.opt(s.str()), age: s.opt(s.num()) });
+  const schema = s.required(original);
+
+  assertOk(schema.parse({ name: "John", age: 30 }));
+  assertErr(schema.parse({ name: "John" }));
+  assertErr(schema.parse({ age: 30 }));
+  assertErr(schema.parse({}));
+});

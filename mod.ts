@@ -495,7 +495,8 @@ export function list<T>(schema: Schema<T>, message?: string): ListSchema<T> {
         const result = schema.parse(data[i]);
         if (result.isErr()) {
           const err = result.unwrapErr();
-          return Result.Err({ ...err, path: [i.toString(), ...err.path] });
+          err.path.unshift(i.toString());
+          return Result.Err(err);
         }
         arr[i] = result.unwrap();
       }
@@ -573,7 +574,8 @@ export function obj<T extends PlainObject>(
         const result = props[key].parse((data as PlainObject)[key]);
         if (result.isErr()) {
           const err = result.unwrapErr();
-          return Result.Err({ ...err, path: [key, ...err.path] });
+          err.path.unshift(key);
+          return Result.Err(err);
         }
         obj[key] = result.unwrap();
       }
@@ -632,12 +634,14 @@ export function record<K extends string, V>(
         const keyResult = key.parse(k);
         if (keyResult.isErr()) {
           const err = keyResult.unwrapErr();
-          return Result.Err({ ...err, path: [k, ...err.path] });
+          err.path.unshift(k);
+          return Result.Err(err);
         }
         const valueResult = value.parse(data[k]);
         if (valueResult.isErr()) {
           const err = valueResult.unwrapErr();
-          return Result.Err({ ...err, path: [k, ...err.path] });
+          err.path.unshift(k);
+          return Result.Err(err);
         }
         obj[keyResult.unwrap()] = valueResult.unwrap();
       }
@@ -695,8 +699,8 @@ export function union<A extends AnySchema, B extends readonly AnySchema[]>(
     type,
     message,
     parse(data) {
-      for (const schema of schemas) {
-        const result = schema.parse(data);
+      for (let i = 0; i < schemas.length; i++) {
+        const result = schemas[i].parse(data);
         if (result.isOk()) {
           return result;
         }
@@ -760,7 +764,8 @@ export function tuple<A extends AnySchema, B extends readonly AnySchema[]>(
         const result = schemas[i].parse(data[i]);
         if (result.isErr()) {
           const err = result.unwrapErr();
-          return Result.Err({ ...err, path: [i.toString(), ...err.path] });
+          err.path.unshift(i.toString());
+          return Result.Err(err);
         }
         arr[i] = result.unwrap();
       }
@@ -971,7 +976,7 @@ export function extend<
   schemas: readonly [A, ...B],
   message?: string,
 ): ObjectSchema<Pretty<UnionToIntersection<Infer<A> | Infer<B[number]>>>> {
-  const props = Object.assign({}, ...schemas.map((s) => s.props)) as any;
+  const props = Object.assign({}, ...schemas.map((s) => s.props));
   return obj(props, message);
 }
 
@@ -1037,8 +1042,94 @@ export function exclude<T extends PlainObject, K extends keyof T>(
   return obj(props as ObjectProps<Omit<T, K>>, message);
 }
 
+type PartialProps<T extends PlainObject> = {
+  [K in keyof T]: T[K] extends Option<infer _> ? T[K] : Option<T[K]>;
+};
+
+type RequiredProps<T extends PlainObject> = {
+  [K in keyof T]: T[K] extends Option<infer U> ? U : T[K];
+};
+
+/**
+ * Transforms an object schema into a new schema where all properties are treated as optional, regardless of their original definitions. This is useful for validating objects where only a subset of the properties may be present.
+ *
+ * @template T - The type of the object being validated, which extends from a plain object.
+ * @param {ObjectSchema<T>} schema - The original object schema with potentially required properties.
+ * @param {string} [message] - Optional custom error message for when the validation of the partial object fails.
+ * @returns {ObjectSchema<Pretty<PartialProps<T>>>} A new object schema where all properties are considered optional.
+ *
+ * @example
+ * // Making an object schema partial
+ * const userSchema = obj({ name: str(), age: num() });
+ * const partialUserSchema = partial(userSchema);
+ * const result = partialUserSchema.parse({ name: "Jane Doe" }); // Age is optional in this schema
+ * if (result.isOk()) {
+ *   console.log("Valid partial user:", result.unwrap());
+ * } else {
+ *   console.log("Validation error:", result.unwrapErr().message);
+ * }
+ * @since 0.2.0
+ */
+export function partial<T extends PlainObject>(
+  schema: ObjectSchema<T>,
+  message?: string,
+): ObjectSchema<Pretty<PartialProps<T>>> {
+  const props = Object.create(null);
+  for (const key in schema.props) {
+    const prop = schema.props[key];
+    if (isOptionalSchema(prop)) {
+      props[key] = prop;
+    } else {
+      props[key] = opt(prop);
+    }
+  }
+  return obj(props, message);
+}
+
+/**
+ * Transforms an object schema into a new schema where all properties are treated as required, converting previously optional properties to their required counterparts. This is useful for scenarios where you want to ensure that all fields of an object are provided.
+ *
+ * @template T - The type of the object being validated, which extends from a plain object.
+ * @param {ObjectSchema<T>} schema - The original object schema with potentially optional properties.
+ * @param {string} [message] - Optional custom error message for when the validation of the required object fails.
+ * @returns {ObjectSchema<Pretty<RequiredProps<T>>>} A new object schema where all properties are considered required.
+ *
+ * @example
+ * // Making an object schema fully required
+ * const partialUserSchema = obj({ name: opt(str()), age: opt(num()) });
+ * const requiredUserSchema = required(partialUserSchema);
+ * const result = requiredUserSchema.parse({ name: "John Doe", age: 30 }); // Both name and age are required
+ * if (result.isOk()) {
+ *   console.log("Valid user with all required fields:", result.unwrap());
+ * } else {
+ *   console.log("Validation error:", result.unwrapErr().message);
+ * }
+ * @since 0.2.0
+ */
+export function required<T extends PlainObject>(
+  schema: ObjectSchema<T>,
+  message?: string,
+): ObjectSchema<Pretty<RequiredProps<T>>> {
+  const props = Object.create(null);
+  for (const key in schema.props) {
+    const prop = schema.props[key];
+    if (isOptionalSchema(prop)) {
+      props[key] = prop.schema;
+    } else {
+      props[key] = prop;
+    }
+  }
+  return obj(props, message);
+}
+
 export interface OptionalSchema<T> extends Schema<Option<T>> {
   readonly schema: Schema<T>;
+}
+
+function isOptionalSchema(
+  schema: Schema<any>,
+): schema is OptionalSchema<any> {
+  return schema.type === "optional";
 }
 
 /**
@@ -1093,7 +1184,6 @@ export function opt<T>(
  * @template T
  * @param {Schema<T>} schema - The schema to validate the provided value against.
  * @param {T} defaultValue - The default value to use when the input is `undefined`.
- * @param {string} [message] - Optional custom error message for when the provided value fails the schema's validation.
  * @returns {Schema<T>} A schema object that ensures a value always conforms to the specified type, using the provided default when necessary.
  *
  * @example
@@ -1105,28 +1195,13 @@ export function opt<T>(
  * console.log("Result 1 (valid number):", result1.isOk() ? "Valid" : "Invalid");
  * console.log("Result 2 (default value used):", result2.isOk() ? result2.unwrap() : "Invalid");
  * ```
- *
- * @example
- * ```ts
- * // String value with a default and custom error message
- * const defaultGreetingSchema = def(str(), "Hello, world!", "Greeting must be a string");
- * const result = defaultGreetingSchema.parse(null); // Assuming null is treated as undefined in your implementation
- * if (result.isOk()) {
- *   console.log("Greeting:", result.unwrap());
- * } else {
- *   console.log("Validation error:", result.unwrapErr().message);
- * }
- * ```
  */
 export function def<T>(
   schema: Schema<T>,
   defaultValue: T,
-  message?: string,
 ): Schema<T> {
-  const type = "default";
   return {
-    type,
-    message,
+    ...schema,
     parse(data) {
       if (isNil(data)) {
         return Result.Ok(defaultValue);
@@ -1188,10 +1263,10 @@ export function pipe<T>(
     parse(data) {
       return schema.parse(data).andThen((value) => {
         let acc = value;
-        for (const pipe of pipeline) {
-          const result = pipe(acc).mapErr((message) => err(type, acc, message));
+        for (let i = 0; i < pipeline.length; i++) {
+          const result = pipeline[i](acc);
           if (result.isErr()) {
-            return result;
+            return result.mapErr((message) => err(type, acc, message));
           }
           acc = result.unwrap();
         }
@@ -1229,12 +1304,13 @@ export function map<T, U>(
   schema: Schema<T>,
   mapper: (data: T) => Result<U, string>,
 ): Schema<U> {
-  const type = schema.type;
   return {
-    type,
+    ...schema,
     parse(data) {
       return schema.parse(data).andThen((value) => {
-        return mapper(value).mapErr((message) => err(type, value, message));
+        return mapper(value).mapErr((message) =>
+          err(schema.type, value, message)
+        );
       });
     },
   };
@@ -1264,9 +1340,9 @@ export function map<T, U>(
 export function minLen(min: number, message?: string): Pipe<string> {
   return function (data) {
     if (data.length < min) {
-      const msg = message ??
+      message ??=
         `Expected length to be at least ${min}, but got ${data.length}`;
-      return Result.Err(msg);
+      return Result.Err(message);
     }
     return Result.Ok(data);
   };
@@ -1294,9 +1370,9 @@ export function minLen(min: number, message?: string): Pipe<string> {
 export function maxLen(max: number, message?: string): Pipe<string> {
   return function (data) {
     if (data.length > max) {
-      const msg = message ??
+      message ??=
         `Expected length to be at most ${max}, but got ${data.length}`;
-      return Result.Err(msg);
+      return Result.Err(message);
     }
     return Result.Ok(data);
   };
