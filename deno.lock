@@ -8,7 +8,9 @@
       "jsr:@oxi/list@^1.2.0": "jsr:@oxi/list@1.2.0",
       "jsr:@oxi/option@^0.1.0": "jsr:@oxi/option@0.1.1",
       "jsr:@oxi/option@^0.2.0": "jsr:@oxi/option@0.2.0",
-      "jsr:@oxi/result@^0.2.0": "jsr:@oxi/result@0.2.0"
+      "jsr:@oxi/result@^0.2.0": "jsr:@oxi/result@0.2.0",
+      "npm:valibot": "npm:valibot@0.30.0",
+      "npm:zod": "npm:zod@3.22.4"
     },
     "jsr": {
       "@oxi/core@0.2.1": {
@@ -38,6 +40,16 @@
         "dependencies": [
           "jsr:@oxi/core@^0.2.1"
         ]
+      }
+    },
+    "npm": {
+      "valibot@0.30.0": {
+        "integrity": "sha512-5POBdbSkM+3nvJ6ZlyQHsggisfRtyT4tVTo1EIIShs6qCdXJnyWU5TJ68vr8iTg5zpOLjXLRiBqNx+9zwZz/rA==",
+        "dependencies": {}
+      },
+      "zod@3.22.4": {
+        "integrity": "sha512-iC+8Io04lddc+mVqQ9AZ7OQ2MrUKGN+oIQyq1vemgt46jwCwLfhq7/pwnBnNXXXZb8VTVLKwp9EDkx+ryxIWmg==",
+        "dependencies": {}
       }
     }
   },

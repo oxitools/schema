@@ -197,6 +197,7 @@ function tryDate(data: unknown) {
  * @returns {Schema<T>} A new schema that first attempts to coerce the input data into the target type before applying the original schema's validation.
  *
  * @example
+ * ```ts
  * // Coercing string input to a number before validation
  * const numericSchema = as(num());
  * const result = numericSchema.parse("42");
@@ -205,8 +206,10 @@ function tryDate(data: unknown) {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Coercing string input to a boolean before validation
  * const booleanSchema = as(bool());
  * const result = booleanSchema.parse("true");
@@ -215,6 +218,7 @@ function tryDate(data: unknown) {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  *
  * @throws {Error} Throws an error if attempting to coerce a type that is not `number`, `string`, `boolean`, or `Date`.
  */
@@ -241,6 +245,7 @@ export function as<T extends number | string | boolean | Date>(
  * @returns {Schema<unknown>} A schema that accepts any input data, returning it as-is without validation.
  *
  * @example
+ * ```ts
  * // Accepting any input data without validation
  * const anySchema = any();
  * const result = anySchema.parse({ key: "value" });
@@ -249,6 +254,7 @@ export function as<T extends number | string | boolean | Date>(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function any(): Schema<unknown> {
   return {
@@ -266,6 +272,7 @@ export function any(): Schema<unknown> {
  * @returns {Schema<string>} A schema object for string validation.
  *
  * @example
+ * ```ts
  * // Basic string validation
  * const nameSchema = str();
  * const result = nameSchema.parse("John Doe");
@@ -274,8 +281,10 @@ export function any(): Schema<unknown> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // String validation with custom error message
  * const ageSchema = str("Age must be a string");
  * const ageResult = ageSchema.parse(30); // This will fail validation
@@ -284,6 +293,7 @@ export function any(): Schema<unknown> {
  * } else {
  *   console.log("Validation error:", ageResult.unwrapErr().message);
  * }
+ * ```
  */
 export function str(message?: string): Schema<string> {
   const type = "string";
@@ -307,6 +317,7 @@ export function str(message?: string): Schema<string> {
  * @returns {Schema<number>} A schema object for number validation.
  *
  * @example
+ * ```ts
  * // Basic number validation
  * const ageSchema = num();
  * const ageResult = ageSchema.parse(25);
@@ -315,8 +326,10 @@ export function str(message?: string): Schema<string> {
  * } else {
  *   console.log("Validation error:", ageResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Number validation with custom error message
  * const quantitySchema = num("Quantity must be a number");
  * const quantityResult = quantitySchema.parse("100"); // This will fail validation
@@ -325,6 +338,7 @@ export function str(message?: string): Schema<string> {
  * } else {
  *   console.log("Validation error:", quantityResult.unwrapErr().message);
  * }
+ * ```
  */
 export function num(message?: string): Schema<number> {
   const type = "number";
@@ -348,6 +362,7 @@ export function num(message?: string): Schema<number> {
  * @returns {Schema<boolean>} A schema object for boolean validation.
  *
  * @example
+ * ```ts
  * // Basic boolean validation
  * const activeSchema = bool();
  * const activeResult = activeSchema.parse(true);
@@ -356,8 +371,10 @@ export function num(message?: string): Schema<number> {
  * } else {
  *   console.log("Validation error:", activeResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Boolean validation with custom error message
  * const isAdminSchema = bool("isAdmin flag must be a boolean");
  * const isAdminResult = isAdminSchema.parse("true"); // This will fail validation
@@ -366,6 +383,7 @@ export function num(message?: string): Schema<number> {
  * } else {
  *   console.log("Validation error:", isAdminResult.unwrapErr().message);
  * }
+ * ```
  */
 export function bool(message?: string): Schema<boolean> {
   const type = "boolean";
@@ -389,6 +407,7 @@ export function bool(message?: string): Schema<boolean> {
  * @returns {Schema<Date>} A schema object for Date validation.
  *
  * @example
+ * ```ts
  * // Basic Date validation
  * const birthDateSchema = date();
  * const result = birthDateSchema.parse(new Date("1990-01-01"));
@@ -397,8 +416,10 @@ export function bool(message?: string): Schema<boolean> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Date validation with custom error message
  * const appointmentDateSchema = date("Appointment date must be a valid date");
  * const appointmentResult = appointmentDateSchema.parse("not a date"); // This will fail validation
@@ -407,6 +428,7 @@ export function bool(message?: string): Schema<boolean> {
  * } else {
  *   console.log("Validation error:", appointmentResult.unwrapErr().message);
  * }
+ * ```
  */
 export function date(message?: string): Schema<Date> {
   const type = "date";
@@ -435,6 +457,7 @@ export interface ListSchema<T> extends Schema<List<T>> {
  * @returns {ListSchema<T>} A schema object for list validation, ensuring each item in the list conforms to the provided schema.
  *
  * @example
+ * ```ts
  * // Validating an array of numbers
  * const numberListSchema = list(num(), "Each item must be a number");
  * const numberListResult = numberListSchema.parse([1, 2, 3, 4, 5]);
@@ -443,8 +466,10 @@ export interface ListSchema<T> extends Schema<List<T>> {
  * } else {
  *   console.log("Validation error:", numberListResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Validating an array of strings with a custom error message
  * const stringListSchema = list(str(), "Each item must be a string");
  * const stringListResult = stringListSchema.parse(["hello", "world", 123]); // This will fail validation
@@ -453,6 +478,7 @@ export interface ListSchema<T> extends Schema<List<T>> {
  * } else {
  *   console.log("Validation error:", stringListResult.unwrapErr().message);
  * }
+ * ```
  */
 export function list<T>(schema: Schema<T>, message?: string): ListSchema<T> {
   const type = "list";
@@ -494,6 +520,7 @@ export interface ObjectSchema<T extends PlainObject = PlainObject>
  * @returns {ObjectSchema<T>} A schema object for object validation, where each property conforms to its specified schema.
  *
  * @example
+ * ```ts
  * // Validating a user object with string and number properties
  * const userSchema = obj({
  *   name: str("Name must be a string"),
@@ -505,8 +532,10 @@ export interface ObjectSchema<T extends PlainObject = PlainObject>
  * } else {
  *   console.log("Validation error:", userResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Object validation with nested schemas and custom error messages
  * const productSchema = obj({
  *   id: num("Product ID must be a number"),
@@ -524,6 +553,7 @@ export interface ObjectSchema<T extends PlainObject = PlainObject>
  * } else {
  *   console.log("Validation error:", productResult.unwrapErr().message);
  * }
+ * ```
  */
 export function obj<T extends PlainObject>(
   props: ObjectProps<T>,
@@ -561,6 +591,7 @@ export function obj<T extends PlainObject>(
  * @returns {Schema<Record<K, V>>} A schema object for record validation, ensuring each key-value pair in the object matches the specified key and value schemas.
  *
  * @example
+ * ```ts
  * // Validating a simple record where keys are strings and values are numbers
  * const inventorySchema = record(str(), num(), "Inventory record is invalid");
  * const inventoryResult = inventorySchema.parse({ apples: 10, oranges: 20 });
@@ -569,8 +600,10 @@ export function obj<T extends PlainObject>(
  * } else {
  *   console.log("Validation error:", inventoryResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Record validation with more complex key and value schemas
  * const userSettingsSchema = record(str("Key must be a string"), bool(), "User settings record is invalid");
  * const userSettingsResult = userSettingsSchema.parse({ darkMode: true, notificationsEnabled: false });
@@ -579,6 +612,7 @@ export function obj<T extends PlainObject>(
  * } else {
  *   console.log("Validation error:", userSettingsResult.unwrapErr().message);
  * }
+ * ```
  */
 export function record<K extends string, V>(
   key: Schema<K>,
@@ -622,14 +656,17 @@ type AnySchema = Schema<any>;
  * @returns {Schema<Infer<A> | Infer<B[number]>>} A schema object for union type validation, allowing values that match any one of the provided schemas.
  *
  * @example
+ * ```ts
  * // Validating a value that can be either a string or a number
  * const stringOrNumberSchema = union([str(), num()], "Value must be a string or a number");
  * const stringResult = stringOrNumberSchema.parse("hello");
  * const numberResult = stringOrNumberSchema.parse(123);
  * console.log("String validation result:", stringResult.isOk() ? "Valid" : "Invalid");
  * console.log("Number validation result:", numberResult.isOk() ? "Valid" : "Invalid");
+ * ```
  *
  * @example
+ * ```ts
  * // Union validation with more complex schemas
  * const contactInfoSchema = union([
  *   obj({ phone: num("Phone number must be a number") }),
@@ -647,6 +684,7 @@ type AnySchema = Schema<any>;
  * } else {
  *   console.log("Validation error:", emailResult.unwrapErr().message);
  * }
+ * ```
  */
 export function union<A extends AnySchema, B extends readonly AnySchema[]>(
   schemas: readonly [A, ...B],
@@ -678,6 +716,7 @@ export function union<A extends AnySchema, B extends readonly AnySchema[]>(
  * @returns {Schema<InferTuple<[A, ...B]>>} A schema object for tuple validation, ensuring that the array matches the structure and types defined by the provided schemas.
  *
  * @example
+ * ```ts
  * // Validating a simple tuple of [string, number]
  * const nameAndAgeSchema = tuple([str(), num()], "Name and age tuple is invalid");
  * const nameAndAgeResult = nameAndAgeSchema.parse(["John Doe", 30]);
@@ -686,8 +725,10 @@ export function union<A extends AnySchema, B extends readonly AnySchema[]>(
  * } else {
  *   console.log("Validation error:", nameAndAgeResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Tuple validation with more complex structures
  * const userSchema = tuple([
  *   str("First name must be a string"),
@@ -700,6 +741,7 @@ export function union<A extends AnySchema, B extends readonly AnySchema[]>(
  * } else {
  *   console.log("Validation error:", userResult.unwrapErr().message);
  * }
+ * ```
  */
 export function tuple<A extends AnySchema, B extends readonly AnySchema[]>(
   schemas: readonly [A, ...B],
@@ -740,6 +782,7 @@ interface Enum {
  * @returns {Schema<E[keyof E]>} A schema object for enum validation, ensuring the value matches one of the predefined enum values.
  *
  * @example
+ * ```ts
  * // Defining and validating a simple enum for user roles
  * const UserRole = {
  *   Admin: 'admin',
@@ -753,8 +796,10 @@ interface Enum {
  * } else {
  *   console.log("Validation error:", userRoleResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Enum validation with numeric values
  * const StatusCode = {
  *   OK: 200,
@@ -768,6 +813,7 @@ interface Enum {
  * } else {
  *   console.log("Validation error:", statusCodeResult.unwrapErr().message);
  * }
+ * ```
  */
 function _enum<E extends Enum>(
   e: E,
@@ -798,6 +844,7 @@ export { _enum as enum };
  * @returns {Schema<T[number]>} A schema object for validation against the specified set of allowed values.
  *
  * @example
+ * ```ts
  * // Validating a value to be one of the predefined colors
  * const colorSchema = oneOf(["red", "green", "blue"], "Invalid color");
  * const colorResult = colorSchema.parse("red");
@@ -806,8 +853,10 @@ export { _enum as enum };
  * } else {
  *   console.log("Validation error:", colorResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Using oneOf without a custom error message
  * const directionSchema = oneOf(["north", "south", "east", "west"]);
  * const directionResult = directionSchema.parse("upward");
@@ -816,6 +865,7 @@ export { _enum as enum };
  * } else {
  *   console.log("Validation error:", directionResult.unwrapErr().message);
  * }
+ * ```
  */
 export function oneOf<const T extends readonly string[]>(
   values: T,
@@ -846,6 +896,7 @@ export function oneOf<const T extends readonly string[]>(
  * @returns {Schema<T>} A schema object for literal value validation.
  *
  * @example
+ * ```ts
  * // Validating a boolean literal
  * const trueSchema = lit(true, "Value must be true");
  * const trueResult = trueSchema.parse(true);
@@ -854,8 +905,10 @@ export function oneOf<const T extends readonly string[]>(
  * } else {
  *   console.log("Validation error:", trueResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Validating a string literal without a custom error message
  * const helloSchema = lit("hello");
  * const helloResult = helloSchema.parse("hello");
@@ -864,6 +917,7 @@ export function oneOf<const T extends readonly string[]>(
  * } else {
  *   console.log("Validation error:", helloResult.unwrapErr().message);
  * }
+ * ```
  */
 export function lit<T extends string | number | boolean>(
   value: T,
@@ -897,6 +951,7 @@ type Pretty<T> = { [K in keyof T]: T[K] } & {};
  * @returns {ObjectSchema<Pretty<UnionToIntersection<Infer<A> | Infer<B[number]>>>>} A new object schema that combines properties from all provided schemas.
  *
  * @example
+ * ```ts
  * // Extending two object schemas
  * const baseSchema = obj({ name: str(), age: num() });
  * const addressSchema = obj({ street: str(), city: str() });
@@ -907,6 +962,7 @@ type Pretty<T> = { [K in keyof T]: T[K] } & {};
  * } else {
  *   console.log("Validation error:", userResult.unwrapErr().message);
  * }
+ * ```
  */
 export function extend<
   A extends ObjectSchema,
@@ -929,6 +985,7 @@ export function extend<
  * @returns {ObjectSchema<Pretty<Pick<T, K>>>} A new object schema that includes only the selected properties from the original schema.
  *
  * @example
+ * ```ts
  * // Selecting a subset of properties from an object schema
  * const userSchema = obj({ name: str(), age: num(), email: str() });
  * const nameAndEmailSchema = select(userSchema, ["name", "email"], "Name and email object is invalid");
@@ -938,6 +995,7 @@ export function extend<
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function select<T extends PlainObject, K extends keyof T>(
   schema: ObjectSchema<T>,
@@ -958,6 +1016,7 @@ export function select<T extends PlainObject, K extends keyof T>(
  * @returns {ObjectSchema<Pretty<Omit<T, K>>>} A new object schema that omits the specified properties from the original schema.
  *
  * @example
+ * ```ts
  * // Excluding properties from an object schema
  * const userSchema = obj({ name: str(), age: num(), password: str() });
  * const publicUserSchema = exclude(userSchema, ["password"], "Public user object is invalid");
@@ -967,6 +1026,7 @@ export function select<T extends PlainObject, K extends keyof T>(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function exclude<T extends PlainObject, K extends keyof T>(
   schema: ObjectSchema<T>,
@@ -990,14 +1050,17 @@ export interface OptionalSchema<T> extends Schema<Option<T>> {
  * @returns {OptionalSchema<T>} A schema object that allows the value to be either of the specified type or `undefined`.
  *
  * @example
+ * ```ts
  * // Optional string value
  * const optionalNameSchema = opt(str("Name must be a string"));
  * const result1 = optionalNameSchema.parse("Jane Doe");
  * const result2 = optionalNameSchema.parse(undefined);
  * console.log("Result 1 (valid string):", result1.isOk() ? "Valid" : "Invalid");
  * console.log("Result 2 (undefined):", result2.isOk() ? "Valid" : "Invalid");
+ * ```
  *
  * @example
+ * ```ts
  * // Optional number value with custom error message
  * const optionalAgeSchema = opt(num(), "Age must be a number if provided");
  * const result = optionalAgeSchema.parse(null); // Assuming null is treated as undefined in your implementation
@@ -1006,6 +1069,7 @@ export interface OptionalSchema<T> extends Schema<Option<T>> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function opt<T>(
   schema: Schema<T>,
@@ -1033,14 +1097,17 @@ export function opt<T>(
  * @returns {Schema<T>} A schema object that ensures a value always conforms to the specified type, using the provided default when necessary.
  *
  * @example
+ * ```ts
  * // Number value with a default
  * const defaultAgeSchema = def(num("Age must be a number"), 18);
  * const result1 = defaultAgeSchema.parse(25);
  * const result2 = defaultAgeSchema.parse(undefined);
  * console.log("Result 1 (valid number):", result1.isOk() ? "Valid" : "Invalid");
  * console.log("Result 2 (default value used):", result2.isOk() ? result2.unwrap() : "Invalid");
+ * ```
  *
  * @example
+ * ```ts
  * // String value with a default and custom error message
  * const defaultGreetingSchema = def(str(), "Hello, world!", "Greeting must be a string");
  * const result = defaultGreetingSchema.parse(null); // Assuming null is treated as undefined in your implementation
@@ -1049,6 +1116,7 @@ export function opt<T>(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function def<T>(
   schema: Schema<T>,
@@ -1095,6 +1163,7 @@ export type Pipeline<T> = ReadonlyArray<Pipe<T>>;
  * @returns {Schema<T>} A new schema that incorporates the original schema validation followed by the pipeline of processing functions.
  *
  * @example
+ * ```ts
  * // Adding custom processing to a string schema
  * const trimmedLowerCaseSchema = pipe(
  *   str("Must be a string"),
@@ -1107,6 +1176,7 @@ export type Pipeline<T> = ReadonlyArray<Pipe<T>>;
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function pipe<T>(
   schema: Schema<T>,
@@ -1140,6 +1210,7 @@ export function pipe<T>(
  * @returns {Schema<U>} A new schema that applies the transformation defined by the mapper function to the data after it has been validated by the initial schema.
  *
  * @example
+ * ```ts
  * // Converting a validated numeric string into a number
  * const numericStringSchema = str("Must be a string representing a number");
  * const numberSchema = map(numericStringSchema, (str) => {
@@ -1152,6 +1223,7 @@ export function pipe<T>(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function map<T, U>(
   schema: Schema<T>,
@@ -1178,6 +1250,7 @@ export function map<T, U>(
  * @returns {Pipe<string>} A pipe function that validates the minimum length of a string.
  *
  * @example
+ * ```ts
  * // Enforcing a minimum string length
  * const schema = pipe(str(), minLen(10, "String must be at least 10 characters long"));
  * const result = schema.parse("hello");
@@ -1186,6 +1259,7 @@ export function map<T, U>(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function minLen(min: number, message?: string): Pipe<string> {
   return function (data) {
@@ -1206,6 +1280,7 @@ export function minLen(min: number, message?: string): Pipe<string> {
  * @returns {Pipe<string>} A pipe function that validates the maximum length of a string.
  *
  * @example
+ * ```ts
  * // Enforcing a maximum string length
  * const schema = pipe(str(), maxLen(5, "String must be no more than 5 characters long"));
  * const result = schema.parse("hello world");
@@ -1214,6 +1289,7 @@ export function minLen(min: number, message?: string): Pipe<string> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function maxLen(max: number, message?: string): Pipe<string> {
   return function (data) {
@@ -1232,6 +1308,7 @@ export function maxLen(max: number, message?: string): Pipe<string> {
  * @returns {Pipe<string>} A pipe function that trims a string, removing leading and trailing whitespace.
  *
  * @example
+ * ```ts
  * // Trimming whitespace from a string
  * const schema = pipe(str(), trim());
  * const result = schema.parse("  hello world  ");
@@ -1240,6 +1317,7 @@ export function maxLen(max: number, message?: string): Pipe<string> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function trim(): Pipe<string> {
   return function (data) {
@@ -1253,6 +1331,7 @@ export function trim(): Pipe<string> {
  * @returns {Pipe<string>} A pipe function that converts a string to uppercase.
  *
  * @example
+ * ```ts
  * // Converting a string to uppercase
  * const schema = pipe(str(), upcase());
  * const result = schema.parse("hello world");
@@ -1261,6 +1340,7 @@ export function trim(): Pipe<string> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function upcase(): Pipe<string> {
   return function (data) {
@@ -1274,6 +1354,7 @@ export function upcase(): Pipe<string> {
  * @returns {Pipe<string>} A pipe function that converts a string to lowercase.
  *
  * @example
+ * ```ts
  * // Converting a string to lowercase
  * const schema = pipe(str(), lowcase());
  * const result = schema.parse("HELLO WORLD");
@@ -1282,6 +1363,7 @@ export function upcase(): Pipe<string> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function lowcase(): Pipe<string> {
   return function (data) {
@@ -1297,6 +1379,7 @@ export function lowcase(): Pipe<string> {
  * @returns {Pipe<string>} A pipe function that validates a string against the specified regular expression pattern.
  *
  * @example
+ * ```ts
  * // Validating a string against an email pattern
  * const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
  * const schema = pipe(str(), pattern(emailPattern, "Invalid email format"));
@@ -1306,6 +1389,7 @@ export function lowcase(): Pipe<string> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function pattern(regex: RegExp, message?: string): Pipe<string> {
   const msg = message ?? `Expected value to match pattern ${regex}`;
@@ -1325,6 +1409,7 @@ export function pattern(regex: RegExp, message?: string): Pipe<string> {
  * @returns {Pipe<T>} A pipe function that validates non-emptiness of a string or List.
  *
  * @example
+ * ```ts
  * // Validating a non-empty string
  * const nonEmptyStringSchema = pipe(str(), notEmpty("String cannot be empty"));
  * const stringResult = nonEmptyStringSchema.parse("");
@@ -1333,8 +1418,10 @@ export function pattern(regex: RegExp, message?: string): Pipe<string> {
  * } else {
  *   console.log("Validation error:", stringResult.unwrapErr().message);
  * }
+ * ```
  *
  * @example
+ * ```ts
  * // Validating a non-empty List
  * const nonEmptyListSchema = pipe(list(str()), notEmpty("List cannot be empty"));
  * const listResult = nonEmptyListSchema.parse(List.from([]));
@@ -1343,6 +1430,7 @@ export function pattern(regex: RegExp, message?: string): Pipe<string> {
  * } else {
  *   console.log("Validation error:", listResult.unwrapErr().message);
  * }
+ * ```
  */
 export function notEmpty<T extends string | List<unknown>>(
   message?: string,
@@ -1364,6 +1452,7 @@ export function notEmpty<T extends string | List<unknown>>(
  * @returns {Pipe<number>} A pipe function that validates the minimum value of a number.
  *
  * @example
+ * ```ts
  * // Enforcing a minimum number value
  * const minAgeSchema = pipe(num(), min(18, "Age must be at least 18"));
  * const ageResult = minAgeSchema.parse(16);
@@ -1372,6 +1461,7 @@ export function notEmpty<T extends string | List<unknown>>(
  * } else {
  *   console.log("Validation error:", ageResult.unwrapErr().message);
  * }
+ * ```
  */
 export function min(min: number, message?: string): Pipe<number> {
   const msg = message ?? `Expected value to be at least ${min}`;
@@ -1391,6 +1481,7 @@ export function min(min: number, message?: string): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that validates the maximum value of a number.
  *
  * @example
+ * ```ts
  * // Enforcing a maximum number value
  * const maxPriceSchema = pipe(num(), max(100, "Price must be no more than 100"));
  * const priceResult = maxPriceSchema.parse(150);
@@ -1399,6 +1490,7 @@ export function min(min: number, message?: string): Pipe<number> {
  * } else {
  *   console.log("Validation error:", priceResult.unwrapErr().message);
  * }
+ * ```
  */
 export function max(max: number, message?: string): Pipe<number> {
   const msg = message ?? `Expected value to be at most ${max}`;
@@ -1418,6 +1510,7 @@ export function max(max: number, message?: string): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that clamps a number within the specified range.
  *
  * @example
+ * ```ts
  * // Clamping a number within a range
  * const schema = pipe(num(), clamp(10, 20));
  * const result = schema.parse(25);
@@ -1426,6 +1519,7 @@ export function max(max: number, message?: string): Pipe<number> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function clamp(min: number, max: number): Pipe<number> {
   return function (data) {
@@ -1440,6 +1534,7 @@ export function clamp(min: number, max: number): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that validates an integer number.
  *
  * @example
+ * ```ts
  * // Validating an integer
  * const schema = pipe(num(), int("Value must be an integer"));
  * const result = schema.parse(3.14);
@@ -1448,6 +1543,7 @@ export function clamp(min: number, max: number): Pipe<number> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function int(message?: string): Pipe<number> {
   const msg = message ?? "Expected value to be an integer";
@@ -1466,6 +1562,7 @@ export function int(message?: string): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that validates a positive number.
  *
  * @example
+ * ```ts
  * // Validating a positive number
  * const schema = pipe(num(), positive("Value must be positive"));
  * const result = schema.parse(-10);
@@ -1474,6 +1571,7 @@ export function int(message?: string): Pipe<number> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function positive(message?: string): Pipe<number> {
   const msg = message ?? "Expected value to be positive";
@@ -1487,6 +1585,7 @@ export function positive(message?: string): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that validates a negative number.
  *
  * @example
+ * ```ts
  * // Validating a negative number
  * const schema = pipe(num(), negative("Value must be negative"));
  * const result = schema.parse(5);
@@ -1495,6 +1594,7 @@ export function positive(message?: string): Pipe<number> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function negative(message?: string): Pipe<number> {
   const msg = message ?? "Expected value to be negative";
@@ -1510,6 +1610,7 @@ export function negative(message?: string): Pipe<number> {
  * @returns {Pipe<number>} A pipe function that validates a number is within the specified range.
  *
  * @example
+ * ```ts
  * // Validating a number within a range
  * const ageSchema = pipe(num(), range(18, 65, "Age must be between 18 and 65"));
  * const result = ageSchema.parse(70);
@@ -1518,6 +1619,7 @@ export function negative(message?: string): Pipe<number> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function range(
   min: number,
@@ -1542,6 +1644,7 @@ export function range(
  * @returns {Pipe<Date>} A pipe function that validates a Date object is before the specified date.
  *
  * @example
+ * ```ts
  * // Validating a date is before another date
  * const deadline = new Date('2023-12-31');
  * const dateSchema = pipe(date(), before(deadline, "Date must be before the end of 2023"));
@@ -1551,6 +1654,7 @@ export function range(
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function before(date: Date, message?: string): Pipe<Date> {
   const msg = message ?? `Expected date to be before ${date.toISOString()}`;
@@ -1570,6 +1674,7 @@ export function before(date: Date, message?: string): Pipe<Date> {
  * @returns {Pipe<Date>} A pipe function that validates a Date object is after the specified date.
  *
  * @example
+ * ```ts
  * // Validating a date is after another date
  * const releaseDate = new Date('2023-01-01');
  * const dateSchema = pipe(date(), after(releaseDate, "Date must be after the release date"));
@@ -1579,6 +1684,7 @@ export function before(date: Date, message?: string): Pipe<Date> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function after(date: Date, message?: string): Pipe<Date> {
   const msg = message ?? `Expected date to be after ${date.toISOString()}`;
@@ -1599,6 +1705,7 @@ export function after(date: Date, message?: string): Pipe<Date> {
  * @returns {Pipe<Date>} A pipe function that validates a Date object falls within the specified range.
  *
  * @example
+ * ```ts
  * // Validating a date is within a specific range
  * const startDate = new Date('2023-01-01');
  * const endDate = new Date('2023-12-31');
@@ -1609,6 +1716,7 @@ export function after(date: Date, message?: string): Pipe<Date> {
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function between(
   start: Date,
@@ -1635,6 +1743,7 @@ const EMAIL_REGEX =
  * @returns {Pipe<string>} A pipe function that validates an email address format.
  *
  * @example
+ * ```ts
  * // Validating an email address
  * const emailSchema = pipe(str(), email("Invalid email format"));
  * const result = emailSchema.parse("user@example.com");
@@ -1643,6 +1752,7 @@ const EMAIL_REGEX =
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function email(message?: string): Pipe<string> {
   const msg = message ?? "Expected value to be a valid email address";
@@ -1664,6 +1774,7 @@ const UUID_REGEX =
  * @returns {Pipe<string>} A pipe function that validates a UUID format.
  *
  * @example
+ * ```ts
  * // Validating a UUID
  * const uuidSchema = pipe(str(), uuid("Invalid UUID format"));
  * const result = uuidSchema.parse("123e4567-e89b-12d3-a456-426614174000");
@@ -1672,6 +1783,7 @@ const UUID_REGEX =
  * } else {
  *   console.log("Validation error:", result.unwrapErr().message);
  * }
+ * ```
  */
 export function uuid(message?: string): Pipe<string> {
   const msg = message ?? "Expected value to be a valid UUID";
