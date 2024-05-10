@@ -8,7 +8,7 @@
       "jsr:@oxi/list@^1.2.0": "jsr:@oxi/list@1.2.0",
       "jsr:@oxi/option@^0.1.0": "jsr:@oxi/option@0.1.1",
       "jsr:@oxi/option@^0.2.0": "jsr:@oxi/option@0.2.0",
-      "jsr:@oxi/result@^0.2.0": "jsr:@oxi/result@0.2.0"
+      "jsr:@oxi/result@^0.3.0": "jsr:@oxi/result@0.3.0"
     },
     "jsr": {
       "@oxi/core@0.2.1": {
@@ -33,8 +33,8 @@
           "jsr:@oxi/core@^0.2.1"
         ]
       },
-      "@oxi/result@0.2.0": {
-        "integrity": "b138677c11b7f2cbda8070d83b203b93168765e40f2cea61c76c4f8a8b64b305",
+      "@oxi/result@0.3.0": {
+        "integrity": "ffc75e9cf30ff39d52f6ad1fe70c6b0f7cc2d05e5ba04aca09ac75e056263f5b",
         "dependencies": [
           "jsr:@oxi/core@^0.2.1"
         ]
@@ -47,7 +47,7 @@
       "jsr:@oxi/core@^0.3.2",
       "jsr:@oxi/list@^1.2.0",
       "jsr:@oxi/option@^0.2.0",
-      "jsr:@oxi/result@^0.2.0"
+      "jsr:@oxi/result@^0.3.0"
     ]
   }
 }
